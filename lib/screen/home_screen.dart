@@ -1,14 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:snaplist/snaplist.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
-
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   TabController _tabController;
+
+  int _currentIndex = 0;
+  List<int> cardDataList = List(10);
+  List<Color> bgcolors = [Color(0xFF6CD0ED), Color(0xFF51A6E6), Color(0xFF7C76F1), Color(0xFFA469DD), Color(0xFFFE726A)];
+
+
+  _changeIndex(index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
+  _changeTabIndex(index) {
+    setState(() {
+
+    });
+  }
 
   @override
   void initState() {
@@ -24,17 +41,36 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-          appBar: TabBar(
-            tabs: [
-              Tab(icon: Icon(Icons.speaker),),
-              Tab(text : 'Nanigo'),
-              Tab(icon: Icon(Icons.account_circle)),
-            ],
-            controller: _tabController,
-            indicatorColor: Colors.transparent,
-          ),
-          body: _cardListWidget(context)),
+        child: Scaffold(
+            backgroundColor: bgcolors[_currentIndex % bgcolors.length],
+            appBar: TabBar(
+              indicatorColor: Colors.transparent,
+              controller: _tabController,
+              onTap: _changeTabIndex,
+              tabs: <Widget>[
+                Tab(icon: Container(
+                    child: Image.asset(
+                      'assets/images/ic_speaker_grey.png',
+                      height: 30.0,
+                      width: 30.0,
+                    )),
+                ),
+                Tab(icon: Container(
+                    child: Image.asset('assets/images/nanigo_logo_white.png',
+                      height: 25.0,
+                      width: 80.0,
+                    )),
+                ),
+                Tab(icon: Container(
+                    child: Image.asset('assets/images/ic_user_grey.png',
+                      height: 30.0,
+                      width: 30.0,
+                    )),
+                ),
+              ],
+            ),
+            body: _cardListWidget(context)
+        )
     );
   }
 
@@ -42,20 +78,20 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
 
-    return SnapList(
-      sizeProvider: (index, data) => Size(width, height * 0.8),
-      separatorProvider: (index, data) => Size(0.0, 130.0),
-      builder: (context, index, data) => _cardWidget(width * 0.8, height * 0.6),
-      count: 10,
-      axis: Axis.vertical,
+    return Swiper(
+      itemCount: cardDataList.length,
+      itemBuilder: (context, index) => _cardWidget(width * 0.8, height * 0.6, index),
+      scrollDirection: Axis.vertical,
+      onIndexChanged: _changeIndex,
     );
   }
 
-  Center _cardWidget(double cwidth, double cheight) {
+  Center _cardWidget(double cwidth, double cheight, int index) {
     return Center(
       child: Container(
         width: cwidth,
         height: cheight,
+        child: Center(child: Text('Card $index')),
         decoration: BoxDecoration(
             color: Colors.white,
             shape: BoxShape.rectangle,
