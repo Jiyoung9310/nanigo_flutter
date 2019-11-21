@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:nanigo_flutter/res/colors.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -12,7 +13,8 @@ class _HomeScreenState extends State<HomeScreen>
 
   int _currentIndex = 0;
   List<int> cardDataList = List(10);
-  List<Color> bgcolors = [Color(0xFF6CD0ED), Color(0xFF51A6E6), Color(0xFF7C76F1), Color(0xFFA469DD), Color(0xFFFE726A)];
+  List<Color> bgcolors = [kBackgroundLightBlue, kBackgroundDeepBlue,
+    kBackgroundPurple, kBackgroundViolet, kBackgroundSalmon];
 
 
   _changeIndex(index) {
@@ -43,33 +45,64 @@ class _HomeScreenState extends State<HomeScreen>
     return SafeArea(
         child: Scaffold(
             backgroundColor: bgcolors[_currentIndex % bgcolors.length],
-            appBar: TabBar(
-              indicatorColor: Colors.transparent,
-              controller: _tabController,
-              onTap: _changeTabIndex,
-              tabs: <Widget>[
-                Tab(icon: Container(
-                    child: Image.asset(
-                      'assets/images/ic_speaker_grey.png',
-                      height: 30.0,
-                      width: 30.0,
-                    )),
+            body: Stack(
+              children: <Widget>[
+                _cardListWidget(context),
+                Positioned(
+                  top: 5.0,
+                  left: 20.0,
+                  right: 20.0,
+                  height: 40.0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      GestureDetector(
+                        child: Container(
+                            child: Image.asset(
+                              'assets/images/ic_speaker_grey.png',
+                              height: 30.0,
+                              width: 30.0,
+                            )
+                        ),
+                      ),
+                      Container(
+                          child: Image.asset('assets/images/nanigo_logo_white.png',
+                            height: 25.0,
+                            width: 80.0,
+                          )
+                      ),
+                      Container(
+                          child: Image.asset('assets/images/ic_user_grey.png',
+                            height: 30.0,
+                            width: 30.0,
+                          )
+                      ),
+                    ],
+                  ),
                 ),
-                Tab(icon: Container(
-                    child: Image.asset('assets/images/nanigo_logo_white.png',
-                      height: 25.0,
-                      width: 80.0,
-                    )),
-                ),
-                Tab(icon: Container(
-                    child: Image.asset('assets/images/ic_user_grey.png',
-                      height: 30.0,
-                      width: 30.0,
-                    )),
-                ),
+                Positioned(
+                  bottom: 21.0,
+                  left: 0.0,
+                  right: 0.0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Container(
+                        child: Image.asset('assets/images/img_o_btn.png'),
+                        height: 55.0,
+                        width: 55.0,
+                      ),
+                      Container(
+                        child: Image.asset('assets/images/img_x_btn.png'),
+                        height: 55.0,
+                        width: 55.0,
+                      ),
+                    ],
+                  ),
+                )
               ],
-            ),
-            body: _cardListWidget(context)
+            )
         )
     );
   }
@@ -80,14 +113,14 @@ class _HomeScreenState extends State<HomeScreen>
 
     return Swiper(
       itemCount: cardDataList.length,
-      itemBuilder: (context, index) => _cardWidget(width * 0.8, height * 0.6, index),
+      itemBuilder: (context, index) => _cardContainer(width * 0.8, height * 0.6, index),
       scrollDirection: Axis.vertical,
       onIndexChanged: _changeIndex,
       loop: false,
     );
   }
 
-  Center _cardWidget(double cwidth, double cheight, int index) {
+  Center _cardContainer(double cwidth, double cheight, int index) {
     return Center(
       child: Container(
         width: cwidth,
@@ -108,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen>
               child: Container(
                 height: 2,
                 width: cwidth,
-                color: Color(0x0C3B464B),
+                color: kDivider,
               ),
             ),
             Positioned(
@@ -125,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen>
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
-                          color: Color(0xFF8799A3)
+                          color: kContentsSmallTextColor
                       ),
                     ),
                   ),
@@ -143,13 +176,13 @@ class _HomeScreenState extends State<HomeScreen>
                           '15',
                           style: TextStyle(
                               fontSize: 15,
-                              color: Color(0xFF8799A3)
+                              color: kContentsSmallTextColorA
                           ),
                         ),
                         Container(
                           height: 13,
                           width: 2,
-                          color: Color(0xFF8799A3),
+                          color: kContentsSmallTextColor,
                         ),
                         Image.asset(
                             'assets/images/ic_comment_count.png',
@@ -160,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen>
                           '15',
                           style: TextStyle(
                               fontSize: 15,
-                              color: Color(0xFF8799A3)
+                              color: kContentsSmallTextColorA
                           ),
                         ),
                       ],
@@ -169,38 +202,7 @@ class _HomeScreenState extends State<HomeScreen>
                 ],
               )
             ),
-            Center(
-              child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      Text(
-                        'Q.',
-                        style: TextStyle(
-                            color: bgcolors[_currentIndex % bgcolors.length],
-                            fontSize: 26,
-                            fontFamily: 'BlackHanSans'
-                        ),
-                      ),
-                      SizedBox(
-                        width: 9.0,
-                      ),
-                      Expanded(
-                        child: Text(
-                          '스타벅스 이번달 신메뉴 아보카도 블랜드 어때?',
-                          style: TextStyle(
-                            color: Color(0xFF2D4053),
-                            fontSize: 26,
-                            fontFamily: 'BlackHanSans',
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
-              ),
-            ),
+            _cardContents(),
           ],
         ),
         decoration: BoxDecoration(
@@ -215,5 +217,40 @@ class _HomeScreenState extends State<HomeScreen>
             ]),
       ),
     );
+  }
+
+  Center _cardContents() {
+    return Center(
+            child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    Text(
+                      'Q.',
+                      style: TextStyle(
+                          color: bgcolors[_currentIndex % bgcolors.length],
+                          fontSize: 26,
+                          fontFamily: 'BlackHanSans'
+                      ),
+                    ),
+                    SizedBox(
+                      width: 9.0,
+                    ),
+                    Expanded(
+                      child: Text(
+                        '스타벅스 이번달 신메뉴 아보카도 블랜드 어때?',
+                        style: TextStyle(
+                          color: kContentsTextColor,
+                          fontSize: 26,
+                          fontFamily: 'BlackHanSans',
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+            ),
+          );
   }
 }
