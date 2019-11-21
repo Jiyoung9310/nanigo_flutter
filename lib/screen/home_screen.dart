@@ -170,12 +170,35 @@ class _HomeScreenState extends State<HomeScreen>
               )
             ),
             Center(
-              child: Text(
-                '스타벅스 이번달 신메뉴 아보카도 블랜드 어때?',
-                style: TextStyle(
-                  fontSize: 26,
-                  fontFamily: 'BlackHanSans'
-                ),
+              child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Text(
+                        'Q.',
+                        style: TextStyle(
+                            color: bgcolors[_currentIndex % bgcolors.length],
+                            fontSize: 26,
+                            fontFamily: 'BlackHanSans'
+                        ),
+                      ),
+                      SizedBox(
+                        width: 9.0,
+                      ),
+                      Expanded(
+                        child: Text(
+                          '스타벅스 이번달 신메뉴 아보카도 블랜드 어때?',
+                          style: TextStyle(
+                            color: Color(0xFF2D4053),
+                            fontSize: 26,
+                            fontFamily: 'BlackHanSans',
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
               ),
             ),
           ],
