@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:nanigo_flutter/res/colors.dart';
+import 'package:nanigo_flutter/screen/mypage_screen.dart';
+import 'package:nanigo_flutter/screen/speaker_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -9,9 +12,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
-  TabController _tabController;
+  PageController _pageController;
 
   int _currentIndex = 0;
+  int _currentPageIndex = 1;
   List<int> cardDataList = List(10);
   List<Color> bgcolors = [kBackgroundLightBlue, kBackgroundDeepBlue,
     kBackgroundPurple, kBackgroundViolet, kBackgroundSalmon];
@@ -25,85 +29,107 @@ class _HomeScreenState extends State<HomeScreen>
 
   _changeTabIndex(index) {
     setState(() {
-
+      _currentPageIndex = index;
+      _pageController.animateToPage(index, duration: Duration(milliseconds: 200), curve: Curves.easeIn);
     });
   }
 
   @override
   void initState() {
-    _tabController = TabController(initialIndex: 1, length: 3, vsync: this);
+    _pageController = PageController(initialPage: _currentPageIndex);
   }
 
 
   @override
   void dispose() {
-    _tabController.dispose();
+    _pageController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: bgcolors[_currentIndex % bgcolors.length]));
     return SafeArea(
-        child: Scaffold(
-            backgroundColor: bgcolors[_currentIndex % bgcolors.length],
-            body: Stack(
-              children: <Widget>[
-                _cardListWidget(context),
-                Positioned(
-                  top: 5.0,
-                  left: 20.0,
-                  right: 20.0,
-                  height: 40.0,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+          child: Scaffold(
+              backgroundColor: bgcolors[_currentIndex % bgcolors.length],
+              body: Stack(
+                children: <Widget>[
+                  PageView(
+                    controller: _pageController,
                     children: <Widget>[
-                      GestureDetector(
-                        child: Container(
-                            child: Image.asset(
-                              'assets/images/ic_speaker_grey.png',
-                              height: 30.0,
-                              width: 30.0,
-                            )
+                      SpeakerScreen(),
+                      _cardListWidget(context),
+                      MyPageScreen(),
+                    ],
+                    onPageChanged: (int index) {
+                      setState(() {
+                        _currentPageIndex = index;
+                      });
+                    },
+                  ),
+                  Positioned(
+                    top: 5.0,
+                    left: 20.0,
+                    right: 20.0,
+                    height: 40.0,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _changeTabIndex(0);
+                            });
+                          },
+                          child: Container(
+                              child: Image.asset(
+                                _currentPageIndex == 0
+                                    ? 'assets/images/ic_speaker_dark.png'
+                                    : 'assets/images/ic_speaker_grey.png',
+                                height: 30.0,
+                                width: 30.0,
+                              )
+                          ),
                         ),
-                      ),
-                      Container(
-                          child: Image.asset('assets/images/nanigo_logo_white.png',
-                            height: 25.0,
-                            width: 80.0,
-                          )
-                      ),
-                      Container(
-                          child: Image.asset('assets/images/ic_user_grey.png',
-                            height: 30.0,
-                            width: 30.0,
-                          )
-                      ),
-                    ],
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _changeTabIndex(1);
+                            });
+                          },
+                          child: Container(
+                              child: Image.asset(
+                                _currentPageIndex == 1
+                                  ? 'assets/images/nanigo_logo_white.png'
+                                  : 'assets/images/nanigo_logo_grey.png',
+                                height: 25.0,
+                                width: 80.0,
+                              )
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _changeTabIndex(2);
+                            });
+                          },
+                          child: Container(
+                              child: Image.asset(
+                                _currentPageIndex == 2
+                                  ? 'assets/images/ic_user_dark.png'
+                                  : 'assets/images/ic_user_grey.png',
+                                height: 30.0,
+                                width: 30.0,
+                              )
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Positioned(
-                  bottom: 21.0,
-                  left: 0.0,
-                  right: 0.0,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Container(
-                        child: Image.asset('assets/images/img_o_btn.png'),
-                        height: 55.0,
-                        width: 55.0,
-                      ),
-                      Container(
-                        child: Image.asset('assets/images/img_x_btn.png'),
-                        height: 55.0,
-                        width: 55.0,
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            )
-        )
+                ],
+              )
+
+      ),
     );
   }
 
@@ -111,12 +137,36 @@ class _HomeScreenState extends State<HomeScreen>
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
 
-    return Swiper(
-      itemCount: cardDataList.length,
-      itemBuilder: (context, index) => _cardContainer(width * 0.8, height * 0.6, index),
-      scrollDirection: Axis.vertical,
-      onIndexChanged: _changeIndex,
-      loop: false,
+    return Stack(
+      children: <Widget>[
+        Swiper(
+          itemCount: cardDataList.length,
+          itemBuilder: (context, index) => _cardContainer(width * 0.8, height * 0.6, index),
+          scrollDirection: Axis.vertical,
+          onIndexChanged: _changeIndex,
+          loop: false,
+        ),
+        Positioned(
+          bottom: 21.0,
+          left: 0.0,
+          right: 0.0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Container(
+                child: Image.asset('assets/images/img_o_btn.png'),
+                height: 55.0,
+                width: 55.0,
+              ),
+              Container(
+                child: Image.asset('assets/images/img_x_btn.png'),
+                height: 55.0,
+                width: 55.0,
+              ),
+            ],
+          ),
+        )
+      ],
     );
   }
 
