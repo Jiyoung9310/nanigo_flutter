@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:nanigo_flutter/res/colors.dart';
 import 'package:nanigo_flutter/screen/mypage_screen.dart';
@@ -47,8 +46,11 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: bgcolors[_currentIndex % bgcolors.length]));
+    double statusBarHeight = MediaQuery.of(context).padding.top;
+    double tabHeight = statusBarHeight + 45.0;
     return SafeArea(
+          top: false,
+          bottom: false,
           child: Scaffold(
               backgroundColor: bgcolors[_currentIndex % bgcolors.length],
               body: Stack(
@@ -56,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen>
                   PageView(
                     controller: _pageController,
                     children: <Widget>[
-                      SpeakerScreen(),
+                      SpeakerScreen(tabHeight),
                       _cardListWidget(context),
                       MyPageScreen(),
                     ],
@@ -66,66 +68,7 @@ class _HomeScreenState extends State<HomeScreen>
                       });
                     },
                   ),
-                  Positioned(
-                    top: 5.0,
-                    left: 20.0,
-                    right: 20.0,
-                    height: 40.0,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _changeTabIndex(0);
-                            });
-                          },
-                          child: Container(
-                              child: Image.asset(
-                                _currentPageIndex == 0
-                                    ? 'assets/images/ic_speaker_dark.png'
-                                    : 'assets/images/ic_speaker_grey.png',
-                                height: 30.0,
-                                width: 30.0,
-                              )
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _changeTabIndex(1);
-                            });
-                          },
-                          child: Container(
-                              child: Image.asset(
-                                _currentPageIndex == 1
-                                  ? 'assets/images/nanigo_logo_white.png'
-                                  : 'assets/images/nanigo_logo_grey.png',
-                                height: 25.0,
-                                width: 80.0,
-                              )
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _changeTabIndex(2);
-                            });
-                          },
-                          child: Container(
-                              child: Image.asset(
-                                _currentPageIndex == 2
-                                  ? 'assets/images/ic_user_dark.png'
-                                  : 'assets/images/ic_user_grey.png',
-                                height: 30.0,
-                                width: 30.0,
-                              )
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  _tabLayout(statusBarHeight),
                 ],
               )
 
@@ -133,9 +76,73 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
+  Positioned _tabLayout(double statusBarHeight) {
+    return Positioned(
+                  top: statusBarHeight + 5.0,
+                  left: 20.0,
+                  right: 20.0,
+                  height: 40.0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _changeTabIndex(0);
+                          });
+                        },
+                        child: Container(
+                            child: Image.asset(
+                              _currentPageIndex == 0
+                                  ? 'assets/images/ic_speaker_dark.png'
+                                  : 'assets/images/ic_speaker_grey.png',
+                              height: 30.0,
+                              width: 30.0,
+                            )
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _changeTabIndex(1);
+                          });
+                        },
+                        child: Container(
+                            child: Image.asset(
+                              _currentPageIndex == 1
+                                ? 'assets/images/nanigo_logo_white.png'
+                                : 'assets/images/nanigo_logo_grey.png',
+                              height: 25.0,
+                              width: 80.0,
+                            )
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _changeTabIndex(2);
+                          });
+                        },
+                        child: Container(
+                            child: Image.asset(
+                              _currentPageIndex == 2
+                                ? 'assets/images/ic_user_dark.png'
+                                : 'assets/images/ic_user_grey.png',
+                              height: 30.0,
+                              width: 30.0,
+                            )
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+  }
+
   Widget _cardListWidget(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
+    double softkeyHeight = MediaQuery.of(context).padding.bottom;
 
     return Stack(
       children: <Widget>[
@@ -147,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen>
           loop: false,
         ),
         Positioned(
-          bottom: 21.0,
+          bottom: softkeyHeight + 21.0,
           left: 0.0,
           right: 0.0,
           child: Row(
