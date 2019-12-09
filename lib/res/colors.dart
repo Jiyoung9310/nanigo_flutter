@@ -10,5 +10,8 @@ const kBackgroundSalmon = const Color(0xFFFE726A);
 const kContentsTextColor = const Color(0xFF2D4053);
 const kContentsSmallTextColor = const Color(0xFF8799A3);
 const kContentsSmallTextColorA = const Color(0xb38799a3);
+const kContentsExtraTextColor = const Color(0xa7b3be);
 
 const kDivider = const Color(0x0C3B464B);
+
+const kNanigoGrey = const Color(0xFFcdd7e0);
